@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:practicals/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,53 +8,42 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Home Page'),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.cyan),
+      home: const RootPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class RootPage extends StatefulWidget {
+  const RootPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RootPage> createState() => _RootPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  String quote = '';
-  Future<String> getkanye () async{
-    try {
-      var response = await http.get(Uri.https('api.kanye.rest'));
-      // debugPrint(response.body);
-      var result = json.decode(response.body);
-      debugPrint(result['quote']);
-
-    } catch (e) {
-      debugPrint('e');
-    }
-
-    return quote;
-  }
-
+class _RootPageState extends State<RootPage> {
+  int currentPage = 0;
   @override
   Widget build(BuildContext context) {
-
-    getkanye().then((value) => quote = value);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Http Requests'),
       ),
-      body: Center(
-        child: Text(quote),
+      body: const HomePage(),
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPage = index;
+          });
+        },
       ),
     );
   }
